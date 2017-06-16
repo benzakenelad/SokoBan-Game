@@ -28,7 +28,7 @@ public class SokobanServer implements Server {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				try {runServer(); } catch (Exception e) {e.printStackTrace();}
+				try {runServer(); } catch (Exception e) {}
 			}
 		}).start();
 	}
