@@ -10,7 +10,7 @@ public interface Model {
 	public void move(Move move, Policy policy, String note);
 	public void loadLevel(String note);
 	public void saveLevel(String note);
-	public void solve();
+	public void optimalSolve();
 	public void quickSolve();
 	public void close();
 

@@ -105,6 +105,7 @@ public class RecordsTableWindowController implements Initializable {
 
 		// Data set up
 		recordsTable.setItems(data);
+		
 
 		// Mouse click event handler
 		recordsTable.setOnMouseClicked(new EventHandler<MouseEvent>() {

@@ -1,30 +1,31 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.Observable;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
 
 import model.data.Level;
 import model.data.Move;
 import model.levelLoaders.LoadLevel;
 import model.levelSavers.SaveLevel;
 import model.policy.Policy;
-import searchLib.Action;
-import solver.SolveSokobanLevel;
 
 public class SokobanModel extends Observable implements Model {
 
 	// Data members
 	private Level lvl = null;
-	private ExecutorService executor = Executors.newCachedThreadPool();
-	private SolveSokobanLevel solver = new SolveSokobanLevel();
+	private static final int port = 5555;
+	private static final String ip = "127.0.0.1";
+	private static final int timeToWait = 15;
 
+	
+	public SokobanModel() {
+		
+	}
+	
 	// Methods implementation
 	@Override
 	public void move(Move move, Policy policy, String note) {
@@ -61,105 +62,92 @@ public class SokobanModel extends Observable implements Model {
 
 	@Override
 	public void close() {
-		executor.shutdown();
 		this.lvl = null;
 	}
 
 	@Override
-	public void solve() {
-		if (lvl == null)
-			return;
-
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					long begin = System.currentTimeMillis();
-					final List<Action> actions = MultiThreadedSolver(50, 50);
-					long end = System.currentTimeMillis();
-					double time = (end - begin) / 1000;
-					System.out.println("Solving time : " + time + " seconds");
-
-					if (actions == null) {
-						System.out.println("Could not solve the level.");
-						return;
-					}
-					executeActions(actions);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+	public void optimalSolve() {
+		if (!serverSolving("optimal solving"))
+			try {
+				executeActions(new Solver().optimalSolve(this.lvl), timeToWait);
+			} catch (Exception e1) {
+				e1.printStackTrace();
 			}
-		}).start();
+
 	}
 
 	@Override
 	public void quickSolve() {
-		if (lvl == null)
-			return;
+		if (!serverSolving("quick solving"))
+			try {
+				executeActions(new Solver().quickSolve(this.lvl), timeToWait);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
 
+	}
+
+	private boolean serverSolving(String note) {
+		try {
+			Socket connectionSocket = new Socket(ip, port);
+			ObjectOutputStream objWriter = new ObjectOutputStream(connectionSocket.getOutputStream());
+			objWriter.writeObject(this.lvl);
+			PrintWriter txtWriter = new PrintWriter(connectionSocket.getOutputStream(), true);
+			txtWriter.println(note);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+			String actions = reader.readLine();
+			executeActions(actions, timeToWait);
+			connectionSocket.close();
+			return true;
+		} catch (Exception e) {
+			System.out.println("Server is offline, solving with local solver.");
+			return false;
+		}
+	}
+
+	private void executeActions(String actions, int timeToWait) {
+		if (actions == null)
+			return;
 		new Thread(new Runnable() {
+			
 			@Override
 			public void run() {
 				try {
-					long begin = System.currentTimeMillis();
-					List<Action> actions = solver.noneOptimalSolve(lvl);
-					long end = System.currentTimeMillis();
-					double time = (end - begin) / 1000;
-					System.out.println("Solving time : " + time + " seconds");
-					executeActions(actions);
-
+					int len = actions.length();
+					for (int i = 0; i < len; i++) {
+						switch (actions.charAt(i)) {
+						case 'u':
+							setChanged();
+							notifyObservers("move up");
+							Thread.sleep(timeToWait);
+							break;
+						case 'r':
+							setChanged();
+							notifyObservers("move right");
+							Thread.sleep(timeToWait);
+							break;
+						case 'd':
+							setChanged();
+							notifyObservers("move down");
+							Thread.sleep(timeToWait);
+							break;
+						case 'l':
+							setChanged();
+							notifyObservers("move left");
+							Thread.sleep(timeToWait);
+							break;
+						default:
+							break;
+						}
+					}
 				} catch (Exception e) {
-					e.printStackTrace();
 				}
+				
 			}
 		}).start();
+
 	}
 
-	private List<Action> MultiThreadedSolver(int threadsNum, int testSize)
-			throws InterruptedException, ExecutionException, TimeoutException {
-		if (lvl == null)
-			return null;
-		// Future product (futures)
-		ArrayList<Future<List<Action>>> futures = new ArrayList<Future<List<Action>>>();
-
-		for (int i = 0; i < threadsNum; i++) {
-			futures.add(executor.submit(new Callable<List<Action>>() {
-				@Override
-				public List<Action> call() throws Exception {
-					List<Action> actions = solver.optimalSolve(lvl, testSize);
-					return actions;
-				}
-			}));
-		}
-		ArrayList<List<Action>> lists = new ArrayList<List<Action>>();
-
-		for (int i = 0; i < threadsNum; i++)
-			lists.add(futures.get(i).get());
-
-		List<Action> returnedList = null;
-
-		int largest = Integer.MAX_VALUE;
-
-		for (int i = 0; i < threadsNum; i++) {
-			if (lists.get(i) != null)
-				if (lists.get(i).size() < largest) {
-					largest = lists.get(i).size();
-					returnedList = lists.get(i);
-				}
-		}
-		return returnedList;
-	}
-
-	private void executeActions(List<Action> actions) throws InterruptedException {
-		if (actions == null)
-			return;
-		for (Action action : actions) {
-			setChanged();
-			notifyObservers(action.getName());
-			Thread.sleep(15);
-		}
-	}
-	
 	// getters and setters
 	public Level getLvl() {
 		return lvl;
@@ -168,4 +156,5 @@ public class SokobanModel extends Observable implements Model {
 	public void setLvl(Level lvl) {
 		this.lvl = lvl;
 	}
+
 }

@@ -38,7 +38,8 @@ public class MainWindowController extends Observable implements View, Initializa
 
 	private RecordsTableWindowController recordsTableWindowController;
 	private Double counter = new Double(0); // time count
-	private StringProperty countString; // timer string	
+	private StringProperty countString; // timer string	property
+	private StringProperty stepsString;// steps string property
 	private boolean countFlag = true; // responsible for timer stoping
 	private boolean timerFlag = false; // timer is on
 	private Timer timerThread = new Timer();; // timer	
@@ -60,6 +61,9 @@ public class MainWindowController extends Observable implements View, Initializa
 		timer.textProperty().bind(countString);
 		timer.setVisible(true);
 		
+		stepsString = new SimpleStringProperty("Steps : 0");
+		steps.textProperty().bind(stepsString);
+		steps.setVisible(true);
 
 		// key function initialization
 		levelGraphicDisplay.addEventFilter(MouseEvent.MOUSE_CLICKED, (e) -> levelGraphicDisplay.requestFocus());
@@ -137,7 +141,8 @@ public class MainWindowController extends Observable implements View, Initializa
 		if (lvl == null || levelCompleted == true)
 			return;
 		
-		setStepsText("Steps: " + Integer.toString(lvl.getSteps())); // update the steps string	
+//		setStepsText("Steps: " + lvl.getSteps()); // update the steps string	
+		Platform.runLater(()->stepsString.set("Steps: " + lvl.getSteps()));
 		
 		if (lvl.isLevelFinishedFlag() == true) {
 			lvl.setFinishTime(counter.doubleValue());
@@ -174,6 +179,7 @@ public class MainWindowController extends Observable implements View, Initializa
 					counter = BigDecimal.valueOf(counter).setScale(3, RoundingMode.HALF_UP).doubleValue();
 					if(countFlag)
 						countString.set("Timer: " + counter);
+					
 				}
 			}, 0, 100);
 			timerFlag = true;
@@ -253,6 +259,7 @@ public class MainWindowController extends Observable implements View, Initializa
 		Platform.exit();
 	}
 
+	/*
 	private void setStepsText(String text) {
 		Platform.runLater(new Runnable() {
 			
@@ -261,10 +268,9 @@ public class MainWindowController extends Observable implements View, Initializa
 				steps.setText(text);
 				
 			}
-		});
-		
+		});	
 	}
-
+	*/
 	public void setRecordsTableWindowController(RecordsTableWindowController recordsTableWindowController) {
 		this.recordsTableWindowController = recordsTableWindowController;
 	}

@@ -46,6 +46,6 @@
       </VBox>
    </left>
    <center> 
-          <LevelGraphicDisplay fx:id="levelGraphicDisplay" height="800.0" width="800.0" BorderPane.alignment="CENTER" wallFileName = "./resources/wall.jpg" boxFileName="./resources/box.jpg" upPlayerFileName="./resources/up.png" downPlayerFileName="./resources/down.png" rightPlayerFileName="./resources/right.png" leftPlayerFileName="./resources/left.png" floorFileName="./resources/floor.jpg" targetFileName="./resources/target.jpg" boxOnTargetFileName="./resources/boxontarget.jpg" congratulationsFileName="./resources/congra.jpg" welcomeFileName="./resources/welcome.jpg"/>           
+          <LevelGraphicDisplay fx:id="levelGraphicDisplay" height="900.0" width="900.0" BorderPane.alignment="CENTER" wallFileName = "./resources/wall.jpg" boxFileName="./resources/box.jpg" upPlayerFileName="./resources/up.png" downPlayerFileName="./resources/down.png" rightPlayerFileName="./resources/right.png" leftPlayerFileName="./resources/left.png" floorFileName="./resources/floor.jpg" targetFileName="./resources/target.jpg" boxOnTargetFileName="./resources/boxontarget.jpg" congratulationsFileName="./resources/congra.jpg" welcomeFileName="./resources/welcome.jpg"/>           
    </center>
 </BorderPane>
