@@ -14,6 +14,6 @@
 	<classpathentry kind="lib" path="libs/jboss-transaction-api_1.2_spec-1.0.1.Final.jar"/>
 	<classpathentry kind="lib" path="libs/mysql-connector-java-5.1.26.jar"/>
 	<classpathentry kind="lib" path="libs/org.eclipse.fx.ide.css.jfx8_2.4.0.201605112122.jar"/>
-	<classpathentry kind="lib" path="libs/SokoBanSolver.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/SokoSolver"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

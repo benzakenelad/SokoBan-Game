@@ -2,11 +2,14 @@ package model.data.gameObjects;
 
 import java.io.Serializable;
 
+/**
+ * <p>SokoBan game object position </p>
+ * @author Elad Ben Zaken
+ *
+ */
 public class Position implements Serializable {
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	// Position data members

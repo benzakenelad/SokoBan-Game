@@ -1,7 +1,6 @@
 ORM
 controller
 controller.general
-controller.server
 controller.sokobancommands
 model
 model.data

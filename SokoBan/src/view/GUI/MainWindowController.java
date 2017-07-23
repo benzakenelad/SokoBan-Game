@@ -193,7 +193,7 @@ public class MainWindowController extends Observable implements View, Initializa
 		Media sound = new Media(new File(musicFile).toURI().toString());
 		mediaPlayer = new MediaPlayer(sound);
 		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-		mediaPlayer.play();
+//		mediaPlayer.play();
 
 	}
 
@@ -283,6 +283,11 @@ public class MainWindowController extends Observable implements View, Initializa
 	public void quickLevelSolve() {
 		setChanged();
 		notifyObservers("quicksolve");
+	}
+	
+	public void Hint(){
+		setChanged();
+		notifyObservers("hint");
 	}
 
 }

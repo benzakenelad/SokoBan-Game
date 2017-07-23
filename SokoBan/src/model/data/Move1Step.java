@@ -2,6 +2,7 @@ package model.data;
 
 import model.policy.Policy;
 
+
 public class Move1Step implements Move{
 	
 	public void Action(Level lvl, Policy policy, String direction) throws Exception // move the character left/up/right/down

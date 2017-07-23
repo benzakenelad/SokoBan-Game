@@ -2,11 +2,13 @@ package model.data.gameObjects;
 
 import java.io.Serializable;
 
+/**
+ * <p> SokoBan game object</p>
+ * @author Elad Ben Zaken
+ *
+ */
 public abstract class GameObject implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	// data members

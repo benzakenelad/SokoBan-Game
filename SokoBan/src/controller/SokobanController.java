@@ -5,11 +5,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import controller.general.Controller;
-import controller.server.Server;
-import controller.server.SokobanClientHandler;
-import controller.server.SokobanServer;
 import controller.sokobancommands.Command;
 import controller.sokobancommands.DisplayCommand;
+import controller.sokobancommands.HintCommand;
 import controller.sokobancommands.LoadLevelCommand;
 import controller.sokobancommands.MoveCommand;
 import controller.sokobancommands.QuickSolveCommand;
@@ -20,13 +18,16 @@ import controller.sokobancommands.SolveCommand;
 import model.Model;
 import view.GUI.View;
 
-
+/**
+ * <p> SokoBan controller (MVC) </p>
+ * @author Elad Ben Zaken
+ *
+ */
 public class SokobanController implements Observer {
 	
 	// Data members
 	private Model model = null;
 	private View view = null;
-	private Server server = null;
 	private Controller controller = null;
 	
 	// mapped commands generator
@@ -42,13 +43,6 @@ public class SokobanController implements Observer {
 		controller.start(); // start to execute commands
 		
 		this.initializeSokoBanCommandsGenerator();
-		
-		// server initialization
-		String[] notes = note.split(" ");
-		if(note.length() >= 2 && notes[0].compareTo("-server") == 0)
-			try { 
-				StartPlayWithServer(Integer.parseInt(notes[1]));
-				} catch (Exception e) { e.printStackTrace(); }
 		
 	}
 
@@ -68,13 +62,6 @@ public class SokobanController implements Observer {
 		}		
 	}	
 
-	public void StartPlayWithServer(int port) throws Exception // start the Sokoban with server
-	{
-		SokobanClientHandler sch = new SokobanClientHandler();
-		sch.addObserver(this);
-		server = new SokobanServer(port, sch);
-		server.startServer();
-	}
 	
 	private Command generateACommand(String[] note){
 		if(note == null)
@@ -99,8 +86,6 @@ public class SokobanController implements Observer {
 		view.safeExit();
 		controller.stop();
 		this.model.close();
-		if(server != null)
-			try {server.stopServer();}catch (Exception e) {e.printStackTrace();}
 		
 	}
 	
@@ -114,6 +99,7 @@ public class SokobanController implements Observer {
 		sokoCommandHashMap.put("display", new DisplayCommand());
 		sokoCommandHashMap.put("solve", new SolveCommand());
 		sokoCommandHashMap.put("quicksolve", new QuickSolveCommand());
+		sokoCommandHashMap.put("hint", new HintCommand());
 	}	
 	
 }

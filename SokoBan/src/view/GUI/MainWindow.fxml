@@ -23,6 +23,7 @@
                   <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
                   <MenuItem mnemonicParsing="false" onAction="#quickLevelSolve" text="Solve" />
                   <MenuItem mnemonicParsing="false" onAction="#solveLevel" text="Optimal Solve" />
+                  <MenuItem mnemonicParsing="false" onAction="#Hint" text="Hint" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Records">

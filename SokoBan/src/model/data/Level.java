@@ -9,11 +9,13 @@ import model.data.gameObjects.GameObject;
 import model.data.gameObjects.Position;
 import model.data.gameObjects.Target;
 
+/**
+ * <p> SokoBan Level class</p>
+ * @author Elad Ben Zaken
+ *
+ */
 public class Level implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	// data members

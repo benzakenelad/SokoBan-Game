@@ -15,7 +15,6 @@ public class MyObjectLevelLoader implements LevelLoader {
 		try {
 			lvl = (Level)input.readObject();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		input.close();

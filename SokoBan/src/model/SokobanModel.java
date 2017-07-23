@@ -12,20 +12,21 @@ import model.data.Move;
 import model.levelLoaders.LoadLevel;
 import model.levelSavers.SaveLevel;
 import model.policy.Policy;
-
+/**
+ * <p> SokoBan model </p>
+ * @author Elad Ben Zaken
+ *
+ */
 public class SokobanModel extends Observable implements Model {
 
 	// Data members
 	private Level lvl = null;
 	private static final int port = 5555;
 	private static final String ip = "127.0.0.1";
-	private static final int timeToWait = 15;
+	private static final int timeToWait = 30;
 
-	
-	public SokobanModel() {
-		
-	}
-	
+	public SokobanModel() {} 
+
 	// Methods implementation
 	@Override
 	public void move(Move move, Policy policy, String note) {
@@ -34,8 +35,7 @@ public class SokobanModel extends Observable implements Model {
 			this.setChanged();
 			this.notifyObservers("display");
 
-		} catch (Exception e) {
-			/* e.printStackTrace(); */}
+		} catch (Exception e) {}
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class SokobanModel extends Observable implements Model {
 		if (actions == null)
 			return;
 		new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				try {
@@ -142,7 +142,7 @@ public class SokobanModel extends Observable implements Model {
 					}
 				} catch (Exception e) {
 				}
-				
+
 			}
 		}).start();
 
@@ -155,6 +155,19 @@ public class SokobanModel extends Observable implements Model {
 
 	public void setLvl(Level lvl) {
 		this.lvl = lvl;
+	}
+
+	public void hint() {
+		String actions = null;
+		try {
+			actions = new Solver().quickSolve(this.lvl);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (actions.length() >= 5)
+			executeActions(actions.substring(0, 5), timeToWait);
+		else
+			executeActions(actions, timeToWait);
 	}
 
 }
